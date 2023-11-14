@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.MovieProject.Dao.MemberDao">
+  	
+  	<select id="selectMemberInfo" resultType="com.MovieProject.dto.Member">
+  		SELECT * FROM MEMBERS WHERE MID = #{id}
+  	</select>
+  	
+  	<insert id="insertMember_kakao">
+  		INSERT INTO MEMBERS(MID, MPW, MNAME, MEMAIL, MDATE, MPROFILE, MSTATE)
+  		VALUES(#{mid},'kakaoAccount',#{mname}, #{memail}, SYSDATE, #{mprofile},'YK') 
+  	</insert>
+  	
+  	<insert id="InsertMemInfo">
+  		INSERT INTO MEMBERS(MID, MPW, MNAME, MEMAIL, MDATE, MPROFILE, MSTATE)
+  		VALUES(#{mid},#{mpw},#{mname}, #{memail}, SYSDATE, #{mfilename},'YC') 
+  	</insert>
+  	
+  	<select id="SelectLoginInfo" resultType="com.MovieProject.dto.Member">
+  		SELECT * FROM MEMBERS WHERE MID = #{mid} AND MPW = #{mpw}
+  	</select>
+  	
+  	<select id="selectMemberIdcheck" resultType="String">
+  		SELECT MID FROM MEMBERS WHERE MID = #{inputId}
+  	</select>
+  	
+  <select id="getMaxRegistCode" resultType="String">
+  		Select NVL(MAX(RECODE),'RE00000') FROM RESERVES
+  	</select>
+  	
+  	<insert id="registReserveInfo">
+		INSERT INTO RESERVES(RECODE, MID, MVCODE, THCODE, SCHALL, SCDATE, REDATE)
+  		VALUES(#{recode},#{mid},#{mvcode}, #{thcode}, #{schall}, TO_DATE(#{scdate},'YYYY/MM/DD HH24:MI:SS'), SYSDATE) 
+  	</insert>
+  	
+  	<select id="selectReserveList" resultType="hashmap">
+  		SELECT MV.MVCODE, MV.MVPOSTER,MV.MVTITLE, TH.THNAME, RE.RECODE, RE.SCHALL, TO_CHAR(RE.SCDATE,'YYYY-MM-DD HH24:MI') AS SCDATE, RE.REDATE
+		FROM RESERVES RE INNER JOIN MOVIES MV ON RE.MVCODE = MV.MVCODE
+        		          INNER JOIN THEATERS TH ON RE.THCODE = TH.THCODE
+		WHERE  MID = #{loginId} 
+		ORDER BY RE.SCDATE DESC
+  	</select>
+  	
+  	<delete id="deleteReserveList">
+  		DELETE FROM RESERVES
+		WHERE RECODE = #{recode}
+  	</delete>
+  	
+  	<select id="selectReviewCode" >
+  		SELECT RVCODE 
+  		FROM REVIEWS
+  		WHERE RECODE = #{recode}
+  	</select>
+  	
+  
+  	
+</mapper>
+
